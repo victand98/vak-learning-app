@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { app } from "./app";
+import { seeders } from "./config";
 
 const start = async () => {
   if (!process.env.JWT_KEY) throw new Error("JWT_KEY must be defined");
@@ -9,6 +10,7 @@ const start = async () => {
     mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
+    await seeders();
   } catch (error) {
     console.error(error);
   }

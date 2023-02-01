@@ -1,6 +1,13 @@
 import { getModelForClass, prop } from "@typegoose/typegoose";
+import { BaseModel } from "./BaseModel";
 
-class User {
+enum Genders {
+  female = "female",
+  male = "male",
+  other = "other",
+}
+
+class User extends BaseModel {
   @prop({ required: true })
   public firstName!: string;
 
@@ -16,8 +23,8 @@ class User {
   @prop({ default: true })
   public status?: boolean;
 
-  @prop({ required: true })
-  public sex!: string;
+  @prop({ required: true, enum: Object.values(Genders) })
+  public gender!: Genders;
 
   @prop({ required: true })
   public course!: string;
@@ -28,4 +35,4 @@ class User {
 
 const UserModel = getModelForClass(User);
 
-export { User, UserModel };
+export { User, UserModel, Genders };
