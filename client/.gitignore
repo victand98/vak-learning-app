@@ -2,7 +2,6 @@
 
 # dependencies
 /node_modules
-node_modules
 /.pnp
 .pnp.js
 
@@ -28,7 +27,6 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
 
 # vercel
 .vercel
@@ -36,15 +34,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-
-node_modules
-.DS_Store
-
-# For shared repository
-/common/
-
-# Build directories
-.next
-build/
-dist/
