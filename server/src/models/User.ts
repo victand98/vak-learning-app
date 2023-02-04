@@ -2,9 +2,9 @@ import { getModelForClass, prop } from "@typegoose/typegoose";
 import { BaseModel } from "./BaseModel";
 
 enum Genders {
-  female = "female",
-  male = "male",
-  other = "other",
+  female = "Femenino",
+  male = "Masculino",
+  other = "Otro",
 }
 
 class User extends BaseModel {

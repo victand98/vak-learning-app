@@ -8,43 +8,37 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 
-export type InputProps<IFormValues extends FieldValues> =
-  React.HTMLProps<HTMLInputElement> & {
+export type SelectProps<IFormValues extends FieldValues> =
+  React.HTMLProps<HTMLSelectElement> & {
     name: Path<IFormValues>;
     register: UseFormRegister<IFormValues>;
-    options: RegisterOptions<IFormValues>;
+    rules: RegisterOptions<IFormValues>;
     error?: FieldError;
     helperText?: React.ReactNode;
-    multiline?: boolean;
+    options: { value: string; label: string }[];
   };
 
-export type InputComponent = <T extends FieldValues>(
-  props: InputProps<T>
+export type SelectComponent = <T extends FieldValues>(
+  props: SelectProps<T>
 ) => React.ReactElement;
 
-export const Input: InputComponent = (props) => {
+export const Select: SelectComponent = (props) => {
   const {
     register,
     label,
     name,
     options,
+    rules,
     helperText,
     error,
-    multiline = false,
     className,
+    placeholder,
     ...rest
   } = props;
 
-  const inputClass = classNames(
-    "w-full sm:text-sm rounded-lg p-2.5",
-    className,
-    {
-      "input input-bordered": !multiline,
-      "textarea textarea-bordered": multiline,
-      "input-error": !!error && !multiline,
-      "textarea-error": !!error && multiline,
-    }
-  );
+  const selectClass = classNames("select select-bordered w-full", className, {
+    "select-error": !!error,
+  });
 
   return (
     <div className="form-control w-full">
@@ -54,25 +48,28 @@ export const Input: InputComponent = (props) => {
         </label>
       )}
 
-      {multiline ? (
-        <textarea
-          className={inputClass}
-          id={name}
-          {...register(name, options)}
-        />
-      ) : (
-        <input
-          className={inputClass}
-          id={name}
-          {...register(name, options)}
-          {...rest}
-        />
-      )}
+      <select
+        className={selectClass}
+        id={name}
+        {...register(name, rules)}
+        {...rest}
+      >
+        <option disabled value="">
+          {placeholder}
+        </option>
+
+        {options.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </select>
 
       <label className="label">
         {helperText && !error && (
           <span className="label-text-alt">{helperText}</span>
         )}
+
         {error && (
           <span className="label-text-alt text-error">{error.message}</span>
         )}

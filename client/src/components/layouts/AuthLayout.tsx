@@ -6,7 +6,7 @@ export type AuthLayoutProps = React.PropsWithChildren<{}>;
 export const AuthLayout = (props: AuthLayoutProps) => {
   return (
     <main className="min-h-screen bg-base-200">
-      <section className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <section className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
         <NextLink href="/" legacyBehavior>
           <a className="flex items-center mb-6">
             <img className="h-10 mr-2" src="/unl_1.png" alt="UNL" />
