@@ -1,28 +1,40 @@
-import { emailRegExp, handleFormError, useRequest, UserService } from "@/lib";
+import { emailRegExp } from "@/lib";
 import { SigninForm } from "@/types";
 import classNames from "classnames";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Alert } from "./Alert";
 import { Input } from "./Input";
 import { NextLink } from "./NextLink";
 
 export const LoginForm = () => {
+  const router = useRouter();
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
   const {
     reset,
     register,
     handleSubmit,
+
     formState: { errors },
-    setError,
   } = useForm<SigninForm>();
 
-  const { doRequest, loading, error } = useRequest({
-    request: UserService.signin,
-    onSuccess: () => reset(),
-    onError: (err) => handleFormError(err, setError),
-  });
+  const onSubmit: SubmitHandler<SigninForm> = async (data) => {
+    setLoading(true);
+    setError(null);
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+      callbackUrl: (router.query.callbackUrl as string) || "/",
+    });
 
-  const onSubmit: SubmitHandler<SigninForm> = (data) => {
-    doRequest(data);
+    if (res?.error) setError(res.error);
+    if (res?.url) router.push(res.url);
+    setLoading(false);
   };
 
   return (
@@ -31,13 +43,7 @@ export const LoginForm = () => {
       className="space-y-4 md:space-y-6"
       noValidate
     >
-      {error && (
-        <Alert color={error ? "failure" : "info"}>
-          {error.errors?.map((err) => (
-            <p key={err.message}>{err.message}</p>
-          ))}
-        </Alert>
-      )}
+      {error && <Alert color={error ? "failure" : "info"}>{error}</Alert>}
 
       <div>
         <Input

@@ -2,6 +2,9 @@ import { emailRegExp, handleFormError, useRequest, UserService } from "@/lib";
 import { SignupForm } from "@/types";
 import { Genders } from "@/types/Enums";
 import classNames from "classnames";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Alert } from "./Alert";
 import { Input } from "./Input";
@@ -9,17 +12,29 @@ import { NextLink } from "./NextLink";
 import { Select } from "./Select";
 
 export const RegisterForm = () => {
+  const router = useRouter();
+  const [customError, setCustomError] = React.useState<string | null>(null);
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
     setError,
+    getValues,
   } = useForm<SignupForm>();
 
   const { doRequest, loading, error } = useRequest({
     request: UserService.signup,
-    onSuccess: () => reset(),
+    onSuccess: async () => {
+      const { email, password } = getValues();
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      if (res?.error) setCustomError(res.error);
+      if (res?.url) router.push(res.url);
+    },
     onError: (err) => handleFormError(err, setError),
   });
 

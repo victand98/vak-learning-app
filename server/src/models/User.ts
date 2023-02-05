@@ -1,4 +1,4 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { getModelForClass, modelOptions, prop } from "@typegoose/typegoose";
 import { BaseModel } from "./BaseModel";
 
 enum Genders {
@@ -6,7 +6,19 @@ enum Genders {
   male = "Masculino",
   other = "Otro",
 }
-
+@modelOptions({
+  schemaOptions: {
+    timestamps: true,
+    toJSON: {
+      versionKey: false,
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+      },
+    },
+  },
+})
 class User extends BaseModel {
   @prop({ required: true })
   public firstName!: string;

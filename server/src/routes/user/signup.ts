@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import jwt from "jsonwebtoken";
 import { BadRequestError } from "../../errors";
 import { validateRequest } from "../../middlewares";
 import { UserModel } from "../../models";
@@ -61,10 +60,7 @@ signupRouter.post(
     });
     await user.save();
 
-    // Generate JWT
-    const userJWT = jwt.sign(user.toJSON(), process.env.JWT_KEY!);
-
-    res.status(201).json({ user, token: userJWT });
+    res.status(201).json(user);
   }
 );
 

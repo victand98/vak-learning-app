@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { NextPage } from "next";
+import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { ReactElement, ReactNode } from "react";
 
@@ -15,5 +16,9 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  return getLayout(<Component {...pageProps} />);
+  return (
+    <SessionProvider session={pageProps.session}>
+      {getLayout(<Component {...pageProps} />)}
+    </SessionProvider>
+  );
 }
