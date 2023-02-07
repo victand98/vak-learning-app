@@ -1,9 +1,11 @@
 import { UserService } from "@/lib";
 import { APIError } from "@/types";
+import { NextApiRequest, NextApiResponse } from "next";
+import { AuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -27,6 +29,7 @@ export default NextAuth({
               ...data.user,
               accessToken: data.token,
               name: `${data.user.firstName} ${data.user.lastName}`,
+              image: null,
             };
           } catch (error) {
             const errorMessage = (error as APIError).errors[0].message;
@@ -51,4 +54,7 @@ export default NextAuth({
       return session;
     },
   },
-});
+};
+
+export default (req: NextApiRequest, res: NextApiResponse) =>
+  NextAuth(req, res, authOptions);

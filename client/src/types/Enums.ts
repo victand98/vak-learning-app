@@ -3,3 +3,9 @@ export enum Genders {
   male = "Masculino",
   other = "Otro",
 }
+
+export enum LearningTypes {
+  visual = "visual",
+  auditory = "auditiva",
+  kinesthetic = "cinestésica",
+}

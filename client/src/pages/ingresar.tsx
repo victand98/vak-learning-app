@@ -1,6 +1,5 @@
 import { AuthLayout, LoginForm } from "@/components";
 import { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { ReactElement } from "react";

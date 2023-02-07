@@ -1,5 +1,6 @@
 import { APIError } from "@/types";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { Session } from "next-auth";
 
 const request = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "/",
@@ -48,5 +49,12 @@ request.interceptors.response.use(
   (response) => responseHandler(response),
   (error) => errorHandler(error)
 );
+
+request.interceptors.request.use((config) => {
+  const session: Session | undefined = config.params?.session;
+  const token: string | undefined = session?.user?.accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 export { request };

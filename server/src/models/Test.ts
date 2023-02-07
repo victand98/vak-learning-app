@@ -4,14 +4,17 @@ import { BaseModel } from "./BaseModel";
 import { Question } from "./Question";
 import { User } from "./User";
 
-class TestResult extends BaseModel {
-  @prop({ required: true, default: "Sin definir" })
-  public learningType!: LearningTypes;
+class Test extends BaseModel {
+  @prop({ default: "Sin definir" })
+  public learningType?: LearningTypes;
 
   @prop({ ref: () => User, required: true })
   public user!: Ref<User>;
 
-  @prop({ required: true, type: () => [ResultAnswer] })
+  @prop({ default: false })
+  public completed?: boolean;
+
+  @prop({ required: true, type: () => [ResultAnswer], default: [] })
   public answers!: ResultAnswer[];
 }
 
@@ -23,6 +26,6 @@ class ResultAnswer {
   public answer!: Ref<Answer>;
 }
 
-const TestResultModel = getModelForClass(TestResult);
+const TestModel = getModelForClass(Test);
 
-export { TestResult, TestResultModel, ResultAnswer };
+export { Test, TestModel, ResultAnswer };

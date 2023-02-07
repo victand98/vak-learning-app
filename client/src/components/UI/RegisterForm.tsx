@@ -15,7 +15,6 @@ export const RegisterForm = () => {
   const router = useRouter();
   const [customError, setCustomError] = React.useState<string | null>(null);
   const {
-    reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -31,6 +30,7 @@ export const RegisterForm = () => {
         redirect: false,
         email,
         password,
+        callbackUrl: "/",
       });
       if (res?.error) setCustomError(res.error);
       if (res?.url) router.push(res.url);
@@ -48,6 +48,10 @@ export const RegisterForm = () => {
       className="space-y-4 md:space-y-6"
       noValidate
     >
+      {customError && (
+        <Alert color={customError ? "failure" : "info"}>{customError}</Alert>
+      )}
+
       {error && (
         <Alert color={error ? "failure" : "info"}>
           {error.errors?.map((err) => (
@@ -159,8 +163,8 @@ export const RegisterForm = () => {
           options={{
             required: "El curso es un campo requerido",
             minLength: {
-              value: 3,
-              message: "El curso debe tener al menos 3 caracteres",
+              value: 1,
+              message: "El curso debe tener al menos 1 caracter",
             },
           }}
           error={errors.course}

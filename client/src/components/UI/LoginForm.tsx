@@ -15,10 +15,8 @@ export const LoginForm = () => {
   const [loading, setLoading] = React.useState(false);
 
   const {
-    reset,
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm<SigninForm>();
 
@@ -29,7 +27,7 @@ export const LoginForm = () => {
       redirect: false,
       email: data.email,
       password: data.password,
-      callbackUrl: (router.query.callbackUrl as string) || "/",
+      callbackUrl: router.query.callbackUrl?.toString() || "/",
     });
 
     if (res?.error) setError(res.error);

@@ -7,7 +7,7 @@ import { UserModel } from "../../models";
 const signupRouter = express.Router();
 
 const validators = [
-  body("email").isEmail().withMessage("El email debe ser válido.").trim(),
+  body("email").trim().isEmail().withMessage("El email debe ser válido."),
   body("firstName")
     .trim()
     .isLength({ min: 3 })
@@ -22,9 +22,11 @@ const validators = [
     .withMessage("La contraseña debe tener entre 4 y 20 caracteres."),
   body("gender").trim().notEmpty().withMessage("El campo es requerido."),
   body("course")
-    .isLength({ min: 3 })
-    .withMessage("Escriba al menos 3 caracteres"),
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Escriba al menos 1 caracter"),
   body("educationalUnit")
+    .trim()
     .isLength({ min: 3 })
     .withMessage("Escriba al menos 3 caracteres"),
 ];
