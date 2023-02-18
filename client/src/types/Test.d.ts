@@ -1,3 +1,4 @@
+import { Answer } from "./Answer";
 import { Base } from "./Base";
 import { LearningTypes } from "./Enums";
 
@@ -9,6 +10,10 @@ export interface Test extends Base {
 }
 
 export interface ResultAnswer {
-  question: Question;
-  answer: Answer;
+  question: number;
+  answer: string;
 }
+
+export type TestFormValues = { [key: string]: string };
+
+export type NewTest = Pick<Test, "learningType" | "answers">;

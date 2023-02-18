@@ -8,7 +8,7 @@ class Test extends BaseModel {
   @prop({ default: "Sin definir" })
   public learningType?: LearningTypes;
 
-  @prop({ ref: () => User, required: true })
+  @prop({ ref: () => User, required: true, unique: true })
   public user!: Ref<User>;
 
   @prop({ default: false })

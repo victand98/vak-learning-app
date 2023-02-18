@@ -1,11 +1,13 @@
+import { Answer } from "./Answer";
 import { Base } from "./Base";
 
-export interface QuestionAnswers extends Base {
+export interface Question extends Base {
+  id: number;
   title: string;
-  answers: Answer[];
 }
 
-export interface Answer extends Base {
+export interface QuestionAnswers extends Base {
+  id: number;
   title: string;
-  learningType: string;
+  answers: Omit<Answer, "question">[];
 }
