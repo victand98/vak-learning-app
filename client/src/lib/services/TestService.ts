@@ -7,5 +7,5 @@ export class TestService {
     request.get<Test | null>("/api/test/user", { params: { session } });
 
   static save = (test: NewTest, session: Session) =>
-    request.post("/api/test", test, { params: { session } });
+    request.post<Test>("/api/test", test, { params: { session } });
 }

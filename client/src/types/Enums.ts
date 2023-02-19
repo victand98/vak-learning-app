@@ -7,5 +7,5 @@ export enum Genders {
 export enum LearningTypes {
   visual = "visual",
   auditory = "auditiva",
-  kinesthetic = "cinestésica",
+  kinesthetic = "kinestésica",
 }

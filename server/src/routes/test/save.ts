@@ -1,14 +1,17 @@
 import express, { Request, Response } from "express";
 import { requireAuth } from "../../middlewares";
+import { TestModel } from "../../models";
 
 const saveTestRouter = express.Router();
 
 saveTestRouter.post("/", requireAuth, async (req: Request, res: Response) => {
-  console.log("req.body", req.body);
+  const { learningTypes, answers } = req.body;
   const user = req.currentUser?.id;
-  console.log("user", user);
-  //   const result = await TestModel.create({});
-  res.json({});
+
+  const test = new TestModel({ user, completed: true, learningTypes, answers });
+  await test.save();
+
+  res.status(201).json(test);
 });
 
 export { saveTestRouter };

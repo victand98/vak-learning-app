@@ -54,6 +54,7 @@ request.interceptors.request.use((config) => {
   const session: Session | undefined = config.params?.session;
   const token: string | undefined = session?.user?.accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  delete config.params?.session;
   return config;
 });
 

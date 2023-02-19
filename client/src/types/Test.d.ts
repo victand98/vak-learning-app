@@ -3,7 +3,7 @@ import { Base } from "./Base";
 import { LearningTypes } from "./Enums";
 
 export interface Test extends Base {
-  learningType: LearningTypes;
+  learningTypes: LearningTypes[];
   user: string;
   completed: boolean;
   answers: ResultAnswer[];
@@ -16,4 +16,4 @@ export interface ResultAnswer {
 
 export type TestFormValues = { [key: string]: string };
 
-export type NewTest = Pick<Test, "learningType" | "answers">;
+export type NewTest = Pick<Test, "learningTypes" | "answers">;

@@ -5,7 +5,7 @@ import { Question } from "./Question";
 enum LearningTypes {
   visual = "visual",
   auditory = "auditiva",
-  kinesthetic = "cinestésica",
+  kinesthetic = "kinestésica",
 }
 
 class Answer extends BaseModel {

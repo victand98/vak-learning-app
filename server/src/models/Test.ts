@@ -5,8 +5,8 @@ import { Question } from "./Question";
 import { User } from "./User";
 
 class Test extends BaseModel {
-  @prop({ default: "Sin definir" })
-  public learningType?: LearningTypes;
+  @prop({ default: [], enum: LearningTypes, type: () => [String] })
+  public learningTypes?: LearningTypes[];
 
   @prop({ ref: () => User, required: true, unique: true })
   public user!: Ref<User>;

@@ -3,10 +3,12 @@ import { QuestionAnswers, ResultAnswer, TestFormValues } from "@/types";
 import { LearningTypes } from "@/types/Enums";
 import classNames from "classnames";
 import { useSession } from "next-auth/react";
-import React from "react";
+import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Alert } from "./Alert";
 
 export const TestForm = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const { data: questions, loading: loadingQuestions } = useQuestions();
   const {
@@ -18,59 +20,43 @@ export const TestForm = () => {
 
   const { doRequest, loading, error } = useRequest({
     request: TestService.save,
-    onSuccess: async () => {},
-    onError: (err) => handleFormError(err, setError),
+    onSuccess: async (res) => {
+      router.push("/test/resultado");
+    },
+    onError: (err) => {
+      handleFormError(err, setError);
+    },
   });
 
   if (loadingQuestions) return <div>Cargando...</div>;
 
   const onSubmit: SubmitHandler<TestFormValues> = (data) => {
     const answers = getAnswers(data);
-    const learningType = getLearningType(answers, questions!);
-
-    doRequest({ learningType, answers }, session!);
+    const learningTypes = getMaxLearningTypes(answers, questions!);
+    doRequest({ learningTypes, answers }, session!);
   };
 
-  const getLearningType = (
+  const getMaxLearningTypes = (
     answers: ResultAnswer[],
     questions: QuestionAnswers[]
-  ): LearningTypes => {
-    let auditoryCount: number = 0;
-    let visualCount: number = 0;
-    let kinestheticCount: number = 0;
+  ): LearningTypes[] => {
+    const learningTypesCount = new Map<LearningTypes, number>();
 
     answers.forEach((item) => {
       const question = questions.find((q) => q.id === item.question)!;
-      const answer = question.answers.find((a) => a.id === item.answer)!;
-
-      switch (answer.learningType) {
-        case LearningTypes.auditory:
-          auditoryCount++;
-          break;
-        case LearningTypes.visual:
-          visualCount++;
-          break;
-        case LearningTypes.kinesthetic:
-          kinestheticCount++;
-          break;
-      }
+      const learningType = question.answers.find(
+        (a) => a.id === item.answer
+      )!.learningType;
+      const count = learningTypesCount.get(learningType) ?? 0;
+      learningTypesCount.set(learningType, count + 1);
     });
 
-    console.log("auditoryCount", auditoryCount);
-    console.log("visualCount", visualCount);
-    console.log("kinestheticCount", kinestheticCount);
+    const maxCount = Math.max(...learningTypesCount.values());
+    const maxLearningTypes = Array.from(learningTypesCount.entries())
+      .filter(([, count]) => count === maxCount)
+      .map(([learningType]) => learningType);
 
-    let maxValue = Math.max(auditoryCount, visualCount, kinestheticCount);
-    console.log("maxValue", maxValue);
-
-    if (auditoryCount > visualCount && auditoryCount > kinestheticCount)
-      return LearningTypes.auditory;
-    if (visualCount > auditoryCount && visualCount > kinestheticCount)
-      return LearningTypes.visual;
-    if (kinestheticCount > auditoryCount && kinestheticCount > visualCount)
-      return LearningTypes.kinesthetic;
-
-    return LearningTypes.auditory;
+    return maxLearningTypes;
   };
 
   const getAnswers = (data: TestFormValues): ResultAnswer[] =>
@@ -80,9 +66,20 @@ export const TestForm = () => {
     }));
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {error && (
+        <Alert color={error ? "failure" : "info"}>
+          {error.errors?.map((err) => (
+            <p key={err.message}>{err.message}</p>
+          ))}
+        </Alert>
+      )}
+
       {questions?.map((question) => (
-        <div key={question.id}>
+        <div
+          key={question.id}
+          className="border border-base-300 rounded-xl px-5 pb-5"
+        >
           <h3>
             <span className="text-primary">{question.id}.</span>{" "}
             {question.title}
@@ -90,7 +87,7 @@ export const TestForm = () => {
 
           <div>
             {question.answers.map((answer) => (
-              <div key={answer.id} className="form-control w-auto md:w-72">
+              <div key={answer.id} className="form-control w-auto md:w-80">
                 <label className="label cursor-pointer" htmlFor={answer.id}>
                   <span className="label-text">{answer.title}</span>
                   <input
@@ -109,7 +106,7 @@ export const TestForm = () => {
 
       <button
         type="submit"
-        className={classNames("btn btn-primary btn-block", {
+        className={classNames("btn btn-primary btn-block btn-lg", {
           loading: loading,
         })}
         disabled={!isValid || loading}

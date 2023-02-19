@@ -1,5 +1,5 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import useSWR, { SWRConfiguration, SWRResponse } from "swr";
 import { getSWRKey, request as httpRequest } from "../helpers";
 
@@ -29,11 +29,11 @@ export const useSWRRequest = <Data = unknown, Error = unknown>(
 ): Return<Data, Error> => {
   const { fallbackData, ...restConfig } = config;
 
-  const { locale } = useRouter();
+  const { data: session } = useSession();
 
   const finalRequest: GetRequest = {
     ...request,
-    params: { ...request?.params, locale },
+    params: { ...request?.params, session },
   };
 
   const {
@@ -42,7 +42,7 @@ export const useSWRRequest = <Data = unknown, Error = unknown>(
     isValidating,
     mutate,
   } = useSWR<AxiosResponse<Data>, AxiosError<Error>>(
-    getSWRKey(finalRequest),
+    getSWRKey(request!),
     () => httpRequest.request<Data>(finalRequest),
     {
       ...restConfig,

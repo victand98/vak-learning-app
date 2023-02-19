@@ -33,10 +33,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data: test } = await TestService.oneUser(session!);
 
   if (!test) return { props: { session } };
-
-  return {
-    props: { redirect: { destination: "/test/resultado", permanent: false } },
-  };
+  return { redirect: { destination: "/test/resultado", permanent: false } };
 };
 
 export default Test;
