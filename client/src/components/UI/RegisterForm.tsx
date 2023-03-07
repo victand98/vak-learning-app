@@ -126,6 +126,19 @@ export const RegisterForm = () => {
           error={errors.password}
         />
 
+        <Input
+          name="age"
+          label="Edad"
+          placeholder="Escribe tu edad"
+          register={register}
+          options={{
+            required: "La edad es un campo requerido",
+            min: { value: 5, message: "La edad debe ser mayor a 5 años" },
+            max: { value: 100, message: "La edad debe ser menor a 100 años" },
+          }}
+          error={errors.age}
+        />
+
         <Select
           name="gender"
           label="Género"

@@ -20,6 +20,7 @@ const validators = [
     .trim()
     .isLength({ min: 4, max: 20 })
     .withMessage("La contraseña debe tener entre 4 y 20 caracteres."),
+  body("age").trim().notEmpty().withMessage("El campo es requerido."),
   body("gender").trim().notEmpty().withMessage("El campo es requerido."),
   body("course")
     .trim()
@@ -44,6 +45,7 @@ signupRouter.post(
       gender,
       course,
       educationalUnit,
+      age,
     } = req.body;
 
     const existingUser = await UserModel.findOne({ email });
@@ -59,6 +61,7 @@ signupRouter.post(
       gender,
       course,
       educationalUnit,
+      age,
     });
     await user.save();
 

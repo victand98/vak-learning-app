@@ -9,6 +9,7 @@ export interface User extends Base {
   gender: Genders;
   course: string;
   educationalUnit: string;
+  age: number;
 }
 
 export interface SigninResponse {
@@ -22,5 +23,11 @@ export interface SignupResponse extends User {}
 
 export type SignupForm = Pick<
   User,
-  "course" | "educationalUnit" | "email" | "firstName" | "gender" | "lastName"
+  | "course"
+  | "educationalUnit"
+  | "email"
+  | "firstName"
+  | "gender"
+  | "lastName"
+  | "age"
 > & { password: string };

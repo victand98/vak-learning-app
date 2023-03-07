@@ -26,6 +26,9 @@ class User extends BaseModel {
   @prop({ required: true })
   public lastName!: string;
 
+  @prop({ required: true })
+  public age!: number;
+
   @prop({ required: true, unique: true })
   public email!: string;
 
