@@ -1,4 +1,10 @@
-import { handleFormError, TestService, useQuestions, useRequest } from "@/lib";
+import {
+  handleFormError,
+  TestService,
+  useOneUserTest,
+  useQuestions,
+  useRequest,
+} from "@/lib";
 import { QuestionAnswers, ResultAnswer, TestFormValues } from "@/types";
 import { LearningTypes } from "@/types/Enums";
 import classNames from "classnames";
@@ -11,6 +17,7 @@ export const TestForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { data: questions, loading: loadingQuestions } = useQuestions();
+  const { mutate } = useOneUserTest();
   const {
     register,
     handleSubmit,
@@ -21,6 +28,7 @@ export const TestForm = () => {
   const { doRequest, loading, error } = useRequest({
     request: TestService.save,
     onSuccess: async (res) => {
+      await mutate(res);
       router.push("/test/resultado");
     },
     onError: (err) => {

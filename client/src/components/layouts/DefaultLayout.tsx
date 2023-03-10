@@ -1,13 +1,16 @@
+import { useOneUserTest } from "@/lib";
 import classNames from "classnames";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React from "react";
 import {
+  RiFilePaper2Line,
   RiHome3Line,
   RiLogoutBoxRLine,
   RiMenu2Fill,
   RiSurveyLine,
 } from "react-icons/ri";
+import { TbMathFunction } from "react-icons/tb";
 import { NextLink } from "../UI";
 
 export type DefaultLayoutProps = React.PropsWithChildren<{}>;
@@ -19,7 +22,7 @@ export const DefaultLayout = (props: DefaultLayoutProps) => {
       <div className="drawer-content">
         <Nav id="drawer" />
         <main className="px-6 xl:pr-2 pb-16">
-          <div className="prose w-full max-w-4xl flex-grow">
+          <div className="prose w-full max-w-5xl flex-grow">
             {props.children}
           </div>
         </main>
@@ -32,19 +35,6 @@ export const DefaultLayout = (props: DefaultLayoutProps) => {
     </div>
   );
 };
-
-const menuItems = [
-  {
-    name: "Principal",
-    icon: RiHome3Line,
-    href: "/",
-  },
-  {
-    name: "Cuestionario",
-    icon: RiSurveyLine,
-    href: "/test",
-  },
-];
 
 const Nav = (props: { id: string }) => {
   const { id } = props;
@@ -97,16 +87,34 @@ const Nav = (props: { id: string }) => {
   );
 };
 
-const Aside = () => {
-  const router = useRouter();
+const menuItems = [
+  {
+    name: "Principal",
+    icon: RiHome3Line,
+    href: "/",
+  },
+  {
+    name: "Cuestionario",
+    icon: RiSurveyLine,
+    href: "/test",
+  },
+  {
+    name: "Resultado",
+    icon: RiFilePaper2Line,
+    href: "/test/resultado",
+    requireTest: true,
+  },
+  {
+    name: "Ejercicios",
+    icon: TbMathFunction,
+    href: "/ejercicios",
+    requireTest: true,
+  },
+];
 
-  const activeTab = useMemo(
-    () =>
-      menuItems.find(
-        (item) => item.href === router.pathname || item.href === router.asPath
-      ),
-    [router.pathname]
-  );
+const Aside = () => {
+  const { data: test } = useOneUserTest();
+  const testCompleted = !!test?.completed;
 
   return (
     <aside className="bg-base-200 w-80">
@@ -122,22 +130,39 @@ const Aside = () => {
 
       <ul className="menu menu-compact flex flex-col p-0 px-4">
         {menuItems.map((item) => (
-          <li key={item.href}>
-            <NextLink href={item.href} legacyBehavior>
-              <a
-                className={classNames("flex gap-4", {
-                  active: activeTab?.href === item.href,
-                })}
-              >
-                <span className="flex-none">
-                  <item.icon className="w-6 h-6 stroke-current" />
-                </span>
-                <span className="flex-1">{item.name}</span>
-              </a>
-            </NextLink>
-          </li>
+          <ItemNav key={item.href} {...item} testCompleted={testCompleted} />
         ))}
       </ul>
     </aside>
+  );
+};
+
+const ItemNav = (props: typeof menuItems[0] & { testCompleted: boolean }) => {
+  const { href, icon: Icon, name, requireTest, testCompleted } = props;
+
+  const router = useRouter();
+  const isActive = router.pathname === href || router.asPath === href;
+  const isDisabled = !!requireTest && !testCompleted;
+
+  return (
+    <li className={classNames({ disabled: isDisabled })}>
+      {isDisabled ? (
+        <a className="flex gap-4">
+          <span className="flex-none">
+            <Icon className="w-6 h-6 stroke-current" />
+          </span>
+          <span className="flex-1">{name}</span>
+        </a>
+      ) : (
+        <NextLink href={href} legacyBehavior>
+          <a className={classNames("flex gap-4", { active: isActive })}>
+            <span className="flex-none">
+              <Icon className="w-6 h-6 stroke-current" />
+            </span>
+            <span className="flex-1">{name}</span>
+          </a>
+        </NextLink>
+      )}
+    </li>
   );
 };

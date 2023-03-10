@@ -28,6 +28,7 @@ export const authOptions: AuthOptions = {
             return {
               ...data.user,
               accessToken: data.token,
+              id: data.user.id,
               name: `${data.user.firstName} ${data.user.lastName}`,
               image: null,
             };
@@ -45,12 +46,14 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
-      if (account && user) return { ...token, accessToken: user.accessToken };
+      if (account && user)
+        return { ...token, accessToken: user.accessToken, id: user.id };
       return token;
     },
 
     async session({ session, token }) {
       session.user.accessToken = token.accessToken;
+      session.user.id = token.id;
       return session;
     },
   },

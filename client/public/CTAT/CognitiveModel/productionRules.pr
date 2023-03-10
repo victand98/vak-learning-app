@@ -1,0 +1,150 @@
+
+(require* wmeTypes "wmeTypes.clp")
+
+;reglas de producción
+;;  Función para sacar la adición
+;;
+;; Debemos de aplicar la propiedad de adición cuando
+;; se necesita operar el valor de una variable para despejar
+;; la variable dependiente
+
+(deffunction pad (?n)
+	(return (+ ?n ?n))
+)
+
+
+;    Función para aplicar la propiedad asociativa
+;    Se aplica una variable denominada u para definir si se realizara
+;    la propiedad en el ejercicio
+
+
+(deffunction pas (?l1 ?l2 l3)
+(bind ?u 0)
+(bind ?us "")
+	(
+		if(= ?u 1)
+			then(
+				(
+					if(= ?us "+")
+						then(
+							(bind ?iz (* ?l1 ?l2))
+							(bind ?pa (* ?iz l3))
+						)
+					else
+						(
+							(bind ?de (* ?l2 ?l3))
+							(bind ?pa (* ?de l1))
+						)
+				)
+			)
+		else
+			((bind ?t (* ?l1 ?l2 ?l3)))
+	)
+
+)
+
+
+;    Función para aplicar la propiedad distributiva
+(deffunction pdt (?n ?v1 ?v2)
+(bind ?c 0)
+(bind ?operador "")
+
+	(
+		if(= ?s 1)
+			then (
+			(bind ?i (* ?n ?v1))
+			(bind ?d (* ?n ?v2))
+			;if
+			(
+				if(= operador +)
+					then((bind ?r (+ ?i ?d)) (return (?r))
+					else
+						((bind ?r2 (- ?i ?d)) (return (?r2))
+			)
+			
+			)
+		else
+			(
+			;if no usado
+			(
+				if(= operador +)
+					then((bind ?r (+ (* (?n v1)) (* (?n v2)) )) (return (?r))
+					else
+						((bind ?r (- (* (?n v1)) (* (?n v2)) )) (return (?r))
+			)
+			)
+	)
+
+	)
+)
+
+;    Función para obtener la propiedad conmutativa
+(deffunction pcm (?f1 ?f2)
+(bind ?s 0)
+	(
+		if(= ?s 1)
+			then (?z (* ?f1 ?f2))
+		else
+			(?z (* ?f2 ?f1))
+	)
+
+	(return (?z))
+)
+
+
+
+;   Funciones básicas
+;; 	Estas propiedades se aplican dependiendo del valor
+;; 	requerido por cada ejercicio
+
+
+;Suma
+(deffunction suma (?m ?n)
+(bind ?z (+ ?m ?n))
+(return(?z))
+)
+;Resta
+(deffunction resta (?m ?n)
+(bind ?z (- ?m ?n))
+(return(?z))
+)
+;Multiplicación
+(deffunction multiplicacion (?m ?n)
+(bind ?z (* ?m ?n))
+(return(?z))
+)
+;División
+(deffunction division (?m ?n)
+(bind ?z (/ ?m ?n))
+(return(?z))
+))
+
+;;Determinar si dividir el valor resultante
+;; si el valor divisible puede ser igual a un valor entero
+;; n1 es el valor del numerador
+;; n2 es el valor del denominador
+
+(defrule dividirf
+	(fraccion (num ?n)(den ?d))
+	(test(mod (/ ?n ?d) ) 0)
+=>
+	(printout t "Dividir la fracción")
+)
+
+
+;; Multiplicación de fracciones
+( deffuntion  fnum(?num ?val)
+(bind ?resultado (* num valor))
+(return(?resultado)
+)
+
+;; Cambio de Signo de término a término
+
+(defrule camSig
+	(term (val1 ?n1))
+	(test(!= ?n1 (* ?n1 -1))
+=>
+	(printout t "Dividir la fracción")
+)
+
+;
