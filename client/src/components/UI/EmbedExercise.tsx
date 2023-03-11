@@ -1,8 +1,22 @@
+import { ExerciseService, useRequest } from "@/lib";
+import { NewExercise } from "@/types";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export const EmbedExercise = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  const { doRequest } = useRequest({
+    request: ExerciseService.save,
+    onSuccess: (data) => {
+      console.log("data", data);
+    },
+    onError: (error) => {
+      console.log("error", error);
+    },
+  });
 
   useEffect(() => {
     window.addEventListener("message", onMessageReceived, false);
@@ -13,8 +27,21 @@ export const EmbedExercise = () => {
 
   const onMessageReceived = (e: MessageEvent) => {
     if (e.data && typeof e.data === "string") {
-      var data = JSON.parse(e.data);
-      console.log(data);
+      let data: {
+        question: string;
+        errors: number;
+        timeElapsed: number;
+        completed?: boolean;
+      } = JSON.parse(e.data);
+
+      const newExercise: NewExercise = {
+        user: session?.user.id!,
+        question: data.question,
+        totalErrors: data.errors,
+        timeElapsed: data.timeElapsed,
+      };
+      doRequest(newExercise, session!);
+      router.push("/test/resultado");
     }
   };
 

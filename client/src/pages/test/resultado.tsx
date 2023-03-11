@@ -1,4 +1,9 @@
-import { DefaultLayout, PageTitle, TestOverview } from "@/components";
+import {
+  DefaultLayout,
+  ExercisesOverview,
+  PageTitle,
+  TestOverview,
+} from "@/components";
 import { getSWRKey, TestService } from "@/lib";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getServerSession } from "next-auth";
@@ -25,6 +30,8 @@ const TestResult: NextPageWithLayout<
       <SWRConfig value={{ fallback: props.fallback }}>
         <div className="my-4">
           <TestOverview />
+
+          <ExercisesOverview />
         </div>
       </SWRConfig>
     </>

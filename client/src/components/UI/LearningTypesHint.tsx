@@ -1,6 +1,6 @@
 import { learningTypeResources, useOneUserTest } from "@/lib";
 import { useSession } from "next-auth/react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { LearningTypePopover } from "./LearningTypePopover";
 
 export const LearningTypesHint = () => {
@@ -22,7 +22,7 @@ export const LearningTypesHint = () => {
 
       <div className="space-y-1 mt-2">
         {learningResources.map((item) => (
-          <LearningTypePopover key={item.type} {...item} />
+          <LearningTypePopover key={item.type} {...item} position="right" />
         ))}
       </div>
     </div>

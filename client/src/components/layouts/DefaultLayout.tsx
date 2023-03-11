@@ -99,15 +99,15 @@ const menuItems = [
     href: "/test",
   },
   {
-    name: "Resultado",
-    icon: RiFilePaper2Line,
-    href: "/test/resultado",
-    requireTest: true,
-  },
-  {
     name: "Ejercicios",
     icon: TbMathFunction,
     href: "/ejercicios",
+    requireTest: true,
+  },
+  {
+    name: "Resultado",
+    icon: RiFilePaper2Line,
+    href: "/test/resultado",
     requireTest: true,
   },
 ];

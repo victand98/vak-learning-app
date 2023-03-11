@@ -1,5 +1,6 @@
 export * from "./Alert";
 export * from "./EmbedExercise";
+export * from "./ExercisesOverview";
 export * from "./Input";
 export * from "./LearningTypePopover";
 export * from "./LearningTypesHint";
