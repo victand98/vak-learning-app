@@ -13,3 +13,15 @@ export const handleFormError = <T extends FieldValues = any>(
       setError(error.field, { message: error.message }, { shouldFocus: true });
   }
 };
+
+export const toHHMMSS = (time: number) => {
+  const sec_num = parseInt(time.toString(), 10);
+  const hours = Math.floor(sec_num / 3600);
+  const minutes = Math.floor((sec_num - hours * 3600) / 60);
+  const seconds = sec_num - hours * 3600 - minutes * 60;
+
+  return [hours, minutes, seconds]
+    .map((v) => (v < 10 ? "0" + v : v))
+    .filter((v, i) => v !== "00" || i > 0)
+    .join(":");
+};

@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
+import { MdClose } from "react-icons/md";
 import {
   RiFilePaper2Line,
   RiHome3Line,
@@ -41,7 +42,7 @@ const Nav = (props: { id: string }) => {
   const router = useRouter();
 
   return (
-    <div className="sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-100 text-base-content">
+    <div className="sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-100 text-base-content shadow-sm">
       <nav className="w-full navbar">
         <div className="flex flex-1 md:gap-1 lg:gap-2">
           <div className="flex-none lg:hidden">
@@ -124,6 +125,12 @@ const Aside = () => {
             <img src="/unl_1.png" alt="Inicio" className="h-16" />
           </a>
         </NextLink>
+      </div>
+
+      <div className="z-20 bg-opacity-90 backdrop-blur sticky top-0 items-center p-4 flex shadow-sm justify-end lg:hidden">
+        <label className="drawer-button cursor-pointer" htmlFor="drawer">
+          <MdClose />
+        </label>
       </div>
 
       <div className="h-4" />

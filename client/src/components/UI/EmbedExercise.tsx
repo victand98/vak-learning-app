@@ -2,7 +2,7 @@ import { ExerciseService, useRequest } from "@/lib";
 import { NewExercise } from "@/types";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export const EmbedExercise = () => {
   const { data: session } = useSession();
@@ -41,7 +41,7 @@ export const EmbedExercise = () => {
         timeElapsed: data.timeElapsed,
       };
       doRequest(newExercise, session!);
-      router.push("/test/resultado");
+      if (data.completed) router.push("/test/resultado");
     }
   };
 
