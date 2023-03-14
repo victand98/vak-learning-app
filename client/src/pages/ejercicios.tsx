@@ -4,7 +4,7 @@ import {
   LearningTypesHint,
   PageTitle,
 } from "@/components";
-import { getSWRKey, TestService } from "@/lib";
+import { ExerciseService, getSWRKey, TestService } from "@/lib";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getServerSession } from "next-auth";
 import Head from "next/head";
@@ -48,10 +48,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (!test.data)
     return { redirect: { destination: "/test", permanent: false } };
 
+  const lastExercise = await ExerciseService.lastByUser(session!);
+
   return {
     props: {
       session,
-      fallback: { [getSWRKey(test.config)]: { data: test.data } },
+      fallback: {
+        [getSWRKey(test.config)]: { data: test.data },
+        [getSWRKey(lastExercise.config)]: { data: lastExercise.data },
+      },
     },
   };
 };

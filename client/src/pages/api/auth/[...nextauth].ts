@@ -59,5 +59,6 @@ export const authOptions: AuthOptions = {
   },
 };
 
-export default (req: NextApiRequest, res: NextApiResponse) =>
-  NextAuth(req, res, authOptions);
+export default function auth(req: NextApiRequest, res: NextApiResponse) {
+  return NextAuth(req, res, authOptions);
+}

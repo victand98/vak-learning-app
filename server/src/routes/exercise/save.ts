@@ -10,13 +10,6 @@ saveExerciseRouter.post(
   async (req: Request, res: Response) => {
     const { user, question, totalErrors, timeElapsed } = req.body;
 
-    const prevExercise = await ExerciseModel.findOne({ user, question });
-    if (prevExercise) {
-      prevExercise.set({ totalErrors, timeElapsed });
-      await prevExercise.save();
-      return res.status(200).json(prevExercise);
-    }
-
     const exercise = new ExerciseModel({
       question,
       totalErrors,

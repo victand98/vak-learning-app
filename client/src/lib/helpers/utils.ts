@@ -1,4 +1,4 @@
-import { APIError } from "@/types";
+import { APIError, Exercise } from "@/types";
 import { FieldValues, UseFormSetError } from "react-hook-form";
 
 export const emailRegExp =
@@ -24,4 +24,17 @@ export const toHHMMSS = (time: number) => {
     .map((v) => (v < 10 ? "0" + v : v))
     .filter((v, i) => v !== "00" || i > 0)
     .join(":");
+};
+
+export const groupByQuestion = (exercises: Exercise[]) => {
+  const groupedExercises = exercises.reduce((acc, exercise) => {
+    const { question } = exercise;
+    if (!acc[question]) {
+      acc[question] = [];
+    }
+    acc[question].push(exercise);
+    return acc;
+  }, {} as Record<string, Exercise[]>);
+
+  return Object.values(groupedExercises);
 };

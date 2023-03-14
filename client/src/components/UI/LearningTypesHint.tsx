@@ -12,7 +12,7 @@ export const LearningTypesHint = () => {
       learningTypeResources.filter((resource) =>
         test!.learningTypes.includes(resource.type)
       ),
-    [test?.learningTypes]
+    [test]
   );
 
   return (

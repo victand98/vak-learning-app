@@ -1,4 +1,5 @@
 export * from "./Alert";
+export * from "./Date";
 export * from "./EmbedExercise";
 export * from "./ExercisesOverview";
 export * from "./Input";
