@@ -1,150 +1,118 @@
 
 (require* wmeTypes "wmeTypes.clp")
-
-;reglas de producción
-;;  Función para sacar la adición
-;;
-;; Debemos de aplicar la propiedad de adición cuando
-;; se necesita operar el valor de una variable para despejar
-;; la variable dependiente
-
-(deffunction pad (?n)
-	(return (+ ?n ?n))
-)
-
-
-;    Función para aplicar la propiedad asociativa
-;    Se aplica una variable denominada u para definir si se realizara
-;    la propiedad en el ejercicio
-
-
-(deffunction pas (?l1 ?l2 l3)
-(bind ?u 0)
-(bind ?us "")
-	(
-		if(= ?u 1)
-			then(
-				(
-					if(= ?us "+")
-						then(
-							(bind ?iz (* ?l1 ?l2))
-							(bind ?pa (* ?iz l3))
-						)
-					else
-						(
-							(bind ?de (* ?l2 ?l3))
-							(bind ?pa (* ?de l1))
-						)
-				)
-			)
-		else
-			((bind ?t (* ?l1 ?l2 ?l3)))
-	)
-
-)
-
-
-;    Función para aplicar la propiedad distributiva
-(deffunction pdt (?n ?v1 ?v2)
-(bind ?c 0)
-(bind ?operador "")
-
-	(
-		if(= ?s 1)
-			then (
-			(bind ?i (* ?n ?v1))
-			(bind ?d (* ?n ?v2))
-			;if
-			(
-				if(= operador +)
-					then((bind ?r (+ ?i ?d)) (return (?r))
-					else
-						((bind ?r2 (- ?i ?d)) (return (?r2))
-			)
-			
-			)
-		else
-			(
-			;if no usado
-			(
-				if(= operador +)
-					then((bind ?r (+ (* (?n v1)) (* (?n v2)) )) (return (?r))
-					else
-						((bind ?r (- (* (?n v1)) (* (?n v2)) )) (return (?r))
-			)
-			)
-	)
-
-	)
-)
-
-;    Función para obtener la propiedad conmutativa
-(deffunction pcm (?f1 ?f2)
-(bind ?s 0)
-	(
-		if(= ?s 1)
-			then (?z (* ?f1 ?f2))
-		else
-			(?z (* ?f2 ?f1))
-	)
-
-	(return (?z))
-)
-
-
-
-;   Funciones básicas
-;; 	Estas propiedades se aplican dependiendo del valor
-;; 	requerido por cada ejercicio
-
-
-;Suma
-(deffunction suma (?m ?n)
-(bind ?z (+ ?m ?n))
-(return(?z))
-)
-;Resta
-(deffunction resta (?m ?n)
-(bind ?z (- ?m ?n))
-(return(?z))
-)
-;Multiplicación
-(deffunction multiplicacion (?m ?n)
-(bind ?z (* ?m ?n))
-(return(?z))
-)
-;División
-(deffunction division (?m ?n)
-(bind ?z (/ ?m ?n))
-(return(?z))
-))
-
-;;Determinar si dividir el valor resultante
-;; si el valor divisible puede ser igual a un valor entero
-;; n1 es el valor del numerador
-;; n2 es el valor del denominador
-
-(defrule dividirf
-	(fraccion (num ?n)(den ?d))
-	(test(mod (/ ?n ?d) ) 0)
-=>
-	(printout t "Dividir la fracción")
-)
-
-
-;; Multiplicación de fracciones
-( deffuntion  fnum(?num ?val)
-(bind ?resultado (* num valor))
-(return(?resultado)
-)
-
-;; Cambio de Signo de término a término
-
-(defrule camSig
-	(term (val1 ?n1))
-	(test(!= ?n1 (* ?n1 -1))
-=>
-	(printout t "Dividir la fracción")
-)
-
+;https://stackoverflow.com/questions/19042218/jess-multislot-questions
 ;
+
+
+
+;verificar esta secciï¿½n
+(deftemplate ecuaciond (slot e1)(multislot valores))
+(deftemplate ecuacion (slot valor (type INTEGER)))
+(deffacts init 
+	(ecuaciond (e1 derecho) (valores x ))
+	(ecuaciond (e1 derecho2) (valores 3x - 4  ))
+ )
+
+
+
+(defrule change_valuesd
+    (ecuaciond (e1 ?ex) (valores $? x  $? ))
+=>
+(printout t "en el lado "  ?ex " hay que pasar valores al otro miembro." crlf)
+
+)
+
+
+(deftemplate ecuacioni (slot e2)(multislot valores1))
+
+(deffacts init 
+	(ecuacioni (e2 izquierdo) (valores1 7 x  +  2))
+	
+ )
+
+;comprobar si se puede realizar a valores enteros
+
+;para comprobar si los valores de suma son correctos
+(deffunction sumar_values (?a ?b ?c)
+     (bind ?r (+ ?a ?b ?c))
+    (printout t ?r crlf)
+    (return ?r)
+)
+(sumar_values 20 15 6)
+
+
+
+(deffacts introducir-datos
+	(ecuacion (valor 20))
+    (ecuacion (valor 15))
+    (ecuacion (valor 41))
+    
+)
+
+(bind ?t (assert (ecuacion (valor 10)) ) )
+
+;suma de valores
+(deffunction sumAll($?args)
+    (eval (str-cat "(+ " (implode$ ?args) ")" )))
+
+
+(deffunction sumAll($?args)
+    (bind ?sum 0)
+    (foreach ?num ?args
+        (bind ?sum (+ ?sum ?num))
+    )
+    (printout t ?sum " es el total." crlf)
+)
+(bind $?valores-lista (create$ 4 5 7)) ; se crea la lista dentro de una variable
+(sumAll $?valores-lista )
+;comprobaar si los valores de resta son correctos
+
+
+
+; resta de valores
+(deffunction subsAll($?args)
+    (bind ?sum 0)
+    (foreach ?num ?args
+        (bind ?sum (- ?sum ?num))
+    )
+    (printout t ?sum " es el total." crlf)
+)
+(sumAll 8 -2 -2  )
+;multiplicacion de valores
+(deffunction multyAll($?args)
+    (bind ?sum 1)
+    (foreach ?num ?args
+        (bind ?sum (* ?sum ?num))
+    )
+    (printout t ?sum " es el total." crlf)
+)
+(multyAll 8 2 -2  ) ;los valores que se encuentran en esta funcion deben ser primero + -
+
+;cambia el valor al cambiar el termino
+
+(defrule change_valuesi
+	(ecuacioni (e2 ?ex) (valores1 $? 7 $?))
+=>
+(printout t "en el lado "  ?ex " hay que pasar valores al otro miembro." crlf)
+
+)
+
+(reset)
+(run)
+(clear)
+;Functions
+
+
+
+(deffunction cambio_signo (?x)
+     (bind ?w -1)
+    (bind ?l (*  ?x ?w))
+    
+    (printout t ?l crlf)
+)
+
+;(predict-observable-action ?entradalbd "UpdateTable" (eval cambio_signo -20) )
+(cambio_signo -20)
+
+
+
